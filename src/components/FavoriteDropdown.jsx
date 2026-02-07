@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export default function FavoritesDropdown({ favorites }) {
+  const { store, actions } = useGlobalReducer();
   return (
     <div className="dropdown">
       <button
@@ -19,10 +21,28 @@ export default function FavoritesDropdown({ favorites }) {
           </li>
         ) : (
           favorites.map((fav) => (
-            <li key={`${fav.type}-${fav.id}`}>
-              <Link className="dropdown-item" to={`/${fav.type}/${fav.id}`}>
+            <li
+              key={`${fav.type}-${fav.id}`}
+              className="dropdown-item d-flex justify-content-between align-items-center"
+            >
+              <Link
+                className="text-decoration-none text-dark flex-grow-1"
+                to={`/${fav.type}/${fav.uid}`}
+              >
                 {fav.name}
               </Link>
+
+              <button
+                className="btn btn-sm btn-link text-danger p-0 ms-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  actions.toggleFavorite(fav, fav.type);
+                }}
+                aria-label="Remove from favorites"
+              >
+                <i className="fa-solid fa-trash"></i>
+              </button>
             </li>
           ))
         )}
